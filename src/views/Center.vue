@@ -1,0 +1,15 @@
+<template>
+  <div class="center">
+    <h1>个人中心</h1>
+  </div>
+</template>
+
+<script>
+  export default {
+    name: 'center',
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
