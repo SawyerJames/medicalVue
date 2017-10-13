@@ -28,7 +28,7 @@ export default{
 <style type="text/css" scoped>
   .user{
     width: 100%;
-    height: 16rem;
+    height: 14.5rem;
     background: url(../assets/bg/indexBg.png);
     -webkit-background-size: cover;
     background-size: cover;

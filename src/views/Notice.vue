@@ -1,6 +1,6 @@
 <template>
   <div class="notice">
-    <h1>个人中心</h1>
+    <h1>通知公告</h1>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="otherMsg">
-    <router-link tag="div" to="/o-msg">
+    <router-link tag="div" to="/notice">
       <div>
         <img class="o-icon" src="../assets/index/o-msg.png">
         <span>其他相关社保信息</span>
@@ -10,7 +10,7 @@
     <router-link tag="div" to="/o-opinion">
       <div>
         <img class="o-icon" src="../assets/index/o-opinion.png">
-        <span>其他相关社保信息</span>
+        <span>意见反馈</span>
       </div>
       <img class="o-icon" src="../assets/common/arrow.png">
     </router-link>

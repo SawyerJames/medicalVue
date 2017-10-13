@@ -32,7 +32,7 @@ export default {
           msg: "首页"
         },
         {
-          path: "about",
+          path: "notice",
           imgUrl: require('./assets/tabBar/about.png'),
           imgUrlChoose: require('./assets/tabBar/aboutChoose.png'),
           msg: "关于我们"
