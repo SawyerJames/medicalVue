@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '@/views/Login.vue'
 import Index from '@/views/Index.vue'
-import About from '@/views/About.vue'
 import Center from '@/views/Center.vue'
 import Search from '@/views/Search.vue'
 import Pay from '@/views/Pay.vue'
@@ -11,6 +9,10 @@ import Omsg from '@/views/O-msg.vue'
 import Oopinion from '@/views/O-opinion.vue'
 import PayMy from '@/views/PayMy.vue'
 import PayOther from '@/views/PayOther.vue'
+import SearchOther from '@/views/SearchOther.vue'
+import SearchMy from '@/views/SearchMy.vue'
+import CenterUser from '@/views/CenterUser.vue'
+import Register from '@/views/Register.vue'
 
 Vue.use(Router)
 
@@ -26,9 +28,9 @@ export default new Router({
     },
     // tabBar 底部三栏
     {
-      path: '/about',
-      name: 'about',
-      component: About
+      path: '/notice',
+      name: 'notice',
+      component: Notice
     },
     {
       path: '/center',
@@ -75,6 +77,29 @@ export default new Router({
       path: '/o-msg',
       name: 'o-msg',
       component: Omsg
+    },
+    // 微信查询
+    {
+      path: '/search-my',
+      name: 'search-my',
+      component: SearchMy
+    },
+    {
+      path: '/search-other',
+      name: 'search-other',
+      component: SearchOther
+    },
+    // 个人中心->详细
+    {
+      path: '/user',
+      name: 'center-user',
+      component: CenterUser
+    },
+    // 注册
+    {
+      path: '/register',
+      name: 'register',
+      component: Register
     }
   ]
 })

@@ -7,7 +7,7 @@
           <input type="text" class="pay-other-form  pay-form-name" placeholder="请输入信息"></input>
         </span>
         <span class="userMsg-title pay-float">关系
-          <select class="pay-other-form" name="" id="">
+          <select class="pay-other-form" name="relative">
             <option value="0">父子</option>
             <option value="1">父女</option>
             <option value="2">母子</option>
@@ -29,9 +29,9 @@
     </button>
 
     <!-- 查询数据success：返回支付弹窗 -->
-    <div class="pay-other-successWin" v-if="aaa">
-      <!-- 如果需要代缴 -->
-      <div class="pay-other-true" v-if="bbb">
+    <div class="pay-other-successWin" v-if="showComfirm">
+      <!-- 如果需要代缴: 弹出查询信息并弹出立即缴费 -->
+      <div class="pay-other-true" v-if="showComfirm_true">
         <div class="pay-other-model">
           <span class="userMsg-title">姓名
             <span class="userMsg-kind">王博博</span>
@@ -60,7 +60,7 @@
         <button class="pay-other-submit">立即缴费</button>
       </div>
 
-      <!-- 如果不需要代缴 -->
+      <!-- 如果不需要代缴 弹出没有缴费选择框-->
       <div class="noPay" v-else>
         <img src="../assets/common/noData.png" alt="无数据">
         <span>您没有任何保险费用需要交纳！</span>
@@ -68,7 +68,7 @@
     </div>
 
     <!-- 查询数据error：返回错误弹窗 -->
-    <div class="pay-other-errorWin" v-if="ccc">
+    <div class="pay-other-errorWin" v-if="showError">
       <img src="../assets/common/noData.png" alt="信息不存在">
       <div>
         <p>您输入的代缴人不存在</p>
@@ -89,9 +89,9 @@
     name: 'pay-other',
     data () {
       return {
-        aaa: false,
-        bbb: false,
-        ccc: false,
+        showComfirm: false,
+        showComfirm_true: false,
+        showError: false,
         formConfig: false
       }
     },

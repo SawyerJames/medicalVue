@@ -3,6 +3,7 @@
     <!-- 个人信息模块 -->
     <user></user>
     <!-- 医保管理 -->
+    <span class="medical-title">医保管理</span>
     <ul class="medical-manage">
       <router-link tag="li" to="/search">
         <img src="../assets/index/mid-search.png">
@@ -31,6 +32,9 @@
       return {
 
       }
+    },
+    created(){
+      document.body.style.background = "#FFF";
     },
     methods: {
 
@@ -81,5 +85,11 @@
     font-size: .875rem;
     font-weight: bold;
     color: #31679C;
+  }
+  .medical-title{
+    display: block;
+    margin: 1rem 0 0 5%;
+    font-size: .875rem;
+    color: #8C8C8C;
   }
 </style>

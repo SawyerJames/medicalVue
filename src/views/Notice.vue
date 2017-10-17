@@ -7,6 +7,14 @@
 <script>
   export default {
     name: 'notice',
+    created(){
+      document.body.style.background = "#FFF";
+    },
+    data () {
+      return {
+
+      }
+    }
   }
 </script>
 

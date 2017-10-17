@@ -30,6 +30,9 @@
         }
       }
     },
+    created(){
+      document.body.style.background = "#FFF";
+    },
     // el未挂载->获取缴费信息
     mounted () {
       this.$nextTick(function (){

@@ -1,12 +1,15 @@
 <template>
   <div class="pay">
+    <!-- 个人信息组件 -->
     <user></user>
+    <!-- 微信缴费组件: 默认为个人缴费 -->
     <div class="payTab">
       <router-link tag="div" v-for="(item,index) in payTabList" :to="{path: item.path}" :class="['payTab-li',{choosePayTab: currentIndex === index }]" @click.native="touchPayBar(index)">
         <img :src="item.imgUrl">
         <span>{{item.msg}}</span>
       </router-link>
     </div>
+    <!-- 子路由展示 -->
     <router-view></router-view>
   </div>
 </template>
@@ -31,6 +34,9 @@
         ],
         currentIndex: 0
       }
+    },
+    created(){
+      document.body.style.background = "#FFF";
     },
     methods: {
       touchPayBar (index) {

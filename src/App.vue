@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view></router-view>
-    <!-- tabBar container -->
+    <!-- tabBar 容器 -->
     <div class="tabHack"></div>
     <ul class="tabBarContainer">
       <!-- router list-for -->
@@ -47,6 +47,10 @@ export default {
       isIndex: 0
     }
   },
+  // 每一页的created钩子：重构body的样式
+  created(){
+    document.body.style.background = "#FFF";
+  },
   // 控制tabBar
   methods: {
     touchBar (index) {
@@ -63,6 +67,7 @@ export default {
     height: 4.375rem;
     position: fixed;
     bottom: 0;
+    z-index: 10;
     border-top: 1px solid #ddd;
     background: #fff;
     display: -webkit-box;

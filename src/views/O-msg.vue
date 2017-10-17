@@ -7,6 +7,14 @@
 <script>
   export default {
     name: 'o-msg',
+    created(){
+      document.body.style.background = "#FFF";
+    },
+    data () {
+      return {
+
+      }
+    }
   }
 </script>
 
