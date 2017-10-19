@@ -13,6 +13,8 @@ import SearchOther from '@/views/SearchOther.vue'
 import SearchMy from '@/views/SearchMy.vue'
 import CenterUser from '@/views/CenterUser.vue'
 import Register from '@/views/Register.vue'
+import Odetail from '@/views/O-detail.vue'
+import Ndetail from '@/views/N-detail.vue'
 
 Vue.use(Router)
 
@@ -67,6 +69,11 @@ export default new Router({
       name: 'notice',
       component: Notice
     },
+    {
+      path: '/n-detail',
+      name: 'n-detail',
+      component: Ndetail
+    },
     // 其他社保信息
     {
       path: '/o-opinion',
@@ -77,6 +84,11 @@ export default new Router({
       path: '/o-msg',
       name: 'o-msg',
       component: Omsg
+    },
+    {
+      path: '/o-detail',
+      name: 'o-detail',
+      component: Odetail
     },
     // 微信查询
     {

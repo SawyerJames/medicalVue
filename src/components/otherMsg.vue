@@ -1,6 +1,6 @@
 <template>
   <div class="otherMsg">
-    <router-link tag="div" to="/notice">
+    <router-link tag="div" to="/o-msg">
       <div>
         <img class="o-icon" src="../assets/index/o-msg.png">
         <span>其他相关社保信息</span>

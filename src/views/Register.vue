@@ -17,12 +17,15 @@
         </div>
       </div>
       <div class="register-model">
-        <span>验证码</span>
-        <input type="number" name="verification" placeholder="请输入验证码"></input>
-      </div>
-      <div class="register-model">
         <span>联系电话</span>
         <input type="number" name="phone" placeholder="请输入联系电话"></input>
+        <div>
+          <button type="button" class="verificationBtn">获取验证码</button>
+        </div>
+      </div>
+      <div class="register-model">
+        <span>验证码</span>
+        <input type="number" name="verification" placeholder="请输入验证码"></input>
       </div>
       <div class="register-model">
         <span>身份证号</span>
@@ -127,6 +130,16 @@
     margin: 2rem auto 0;
     border: none;
     border-radius: 2rem;
+    outline: none;
+  }
+  /*验证信息样式*/
+  .verificationBtn{
+    border: none;
+    border-radius: 1rem;
+    padding: .2rem .5rem;
+    background: #EC9148;
+    color: #fff;
+    font-size: .75rem;
     outline: none;
   }
 </style>
