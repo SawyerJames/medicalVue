@@ -1,27 +1,27 @@
 <template>
   <div class="n-detail">
-    <h1>{{this.detail.Title}}</h1>
-    <p class="msg">{{this.detail.city}}{{this.detail.Createtime}}</p>
-    <div class="msgContent" v-html="this.detail.Content"></div>
+    <h1>{{detail.Title}}</h1>
+    <span class="msg">{{detail.city}}{{detail.Createtime}}</span>
+    <div class="msgContent" v-html="detail.Content"></div>
   </div>
 </template>
 
 <script type="text/javascript">
 export default{
   name: 'n-detail',
-  created(){
-    document.body.style.background = "#FFF";
-  },
   data (){
     return {
       detail: []
     }
   },
-  mounted () {
-    this.$nextTick (function () {
-      var Id = this.$route.params.id;
-      this.getNoticeDetail(Id);
-    })
+  activated (){
+    // 由路由notice传参id，并重新赋值
+    var Id = this.$route.params.id;
+    //调用获取详细信息方法，传递参数判断
+    this.getNoticeDetail(Id);
+  },
+  deactivated (){
+    this.detail = '';
   },
   methods: {
     getNoticeDetail: function (Id){
@@ -29,7 +29,7 @@ export default{
       // 加载数据
       this.$tools.GetDataFromServer(
         this,
-        'http://123.206.9.224/wap/Notice/NoticeInfo/id/'+Id,
+        process.env.API_HOST + 'Client/NoticeInfo/id/'+Id,
         function success (res) {
           var resData = res.data;
           if (resData.State.Code === 1) {
@@ -37,7 +37,7 @@ export default{
           }
         },
         function error (err){
-          console.log(2222);
+          return
         }
       )
     }
@@ -45,7 +45,7 @@ export default{
 }
 </script>
 
-<style type="text/css">
+<style type="text/css" scoped>
   .n-detail{
     width: 100%;
     padding: 5%;
@@ -53,14 +53,11 @@ export default{
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
-  h1{
-    text-align: center;
-  }
-  .msg{
-    font-size: .75rem;
-    margin: 1rem auto;
-    text-align: center;
-    color: #767676;
+  .n-detail h1{
+    text-align: left;
+    border-bottom: .2rem dashed #ddd;
+    padding-bottom: 1rem;
+    font-size: 1rem;
   }
   .msgContent{
     width: 100%;
@@ -70,10 +67,8 @@ export default{
   .msgContent p{
     text-indent: 1.5rem;
     line-height: 1.2rem;
-  }
-  .msgContent img{
-    width: 100%;
-    border-radius: .2rem;
-    margin: .5rem 0;
+    /*英文断行*/
+    word-wrap:break-word;
+    word-break:break-all;
   }
 </style>

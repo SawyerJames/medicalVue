@@ -1,6 +1,11 @@
 <template>
   <div class="search-other">
-    <user></user>
+    <!-- 报错弹窗 -->
+    <div class="errorMask" v-if="errShow"></div>
+    <div class="errorWin" v-if="errShow">
+      <img src="../assets/common/ErrLoading.gif">
+      <p>{{errTxt}}</p>
+    </div>
     <!-- 用户缴费信息查询 -->
     <div class="search-other-title">
       <span>用户缴费信息</span>
@@ -10,16 +15,17 @@
       <div class="search-model">
         <div>
           <span class="search-model-title">姓名</span>
-          <span class="search-model-msg">{{search.nickName}}</span>
+          <span class="search-model-msg">{{search.username}}</span>
         </div>
         <div>
           <span class="search-model-title">性别</span>
-          <span class="search-model-msg">{{search.sex}}</span>
+          <span class="search-model-msg" v-if="search.sex === '1'">男</span>
+          <span class="search-model-msg" v-if="search.sex === '2'">女</span>
         </div>
       </div>
       <div class="search-model">
         <span class="search-model-title">身份证号</span>
-        <span class="search-model-msg">{{search.idCard}}</span>
+        <span class="search-model-msg">{{search.card}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">出生日期</span>
@@ -27,23 +33,23 @@
       </div>
       <div class="search-model">
         <span class="search-model-title">缴费金额</span>
-        <span class="search-model-msg">{{search.money}}</span>
+        <span class="search-model-msg">{{search.payment_amount}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">统筹区名称</span>
-        <span class="search-model-msg">{{search.company}}</span>
+        <span class="search-model-msg">{{search.planning_name}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">险种名称</span>
-        <span class="search-model-msg">{{search.medicalType}}</span>
+        <span class="search-model-msg">{{search.insurance_name}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">缴费年度</span>
-        <span class="search-model-msg">{{search.incomeYear}}</span>
+        <span class="search-model-msg">{{search.years}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">上一年度待遇期至何时</span>
-        <span class="search-model-msg">{{search.oldYear}}</span>
+        <span class="search-model-msg">{{search.valid_period}}</span>
       </div>
     </div>
   </div>
@@ -55,34 +61,46 @@
     name: 'search-other',
     data () {
       return {
-        search: {
-          nickName: "张添",
-          sex: "男",
-          idCard: "220202199402222222",
-          birthday: "1994.13.14",
-          money: "1500.00",
-          company: "长春市南关区医保局",
-          medicalType: "医疗保险",
-          incomeYear: "2017-2018",
-          oldYear: "2017.02.11"
-        }
+        search: {},
+        errShow: false,
+        errTxt: ''
       }
-    },
-    created(){
-      document.body.style.background = "#EDF2F5";
     },
     mounted () {
       this.$nextTick(function (){
-        this.loadData();
+        var that = this;
+        this.$tools.GetDataFromServer(
+          this,
+          process.env.API_HOST + 'Client/PaymentInfo/status/1',
+          function success (res) {
+            var resData = res.data;
+            if (resData.State.Code == 1) {
+              that.search = resData.Info;
+            }
+            if (resData.State.Code != 1) {
+              that.errShow = true;
+              that.errTxt = '数据库没有您的信息'
+              var errLoading = setTimeout(function (){
+                that.errShow = false;
+                that.errTxt = ''
+                clearTimeout(errLoading);
+              },2000)
+            }
+          },
+          function error (err){
+            that.errShow = true;
+            that.errTxt = '出现错误，请重新加载'
+            var errLoading = setTimeout(function (){
+              that.errShow = false;
+              that.errTxt = ''
+              clearTimeout(errLoading);
+            },2000)
+          }
+        );
       });
     },
     components: {
       user
-    },
-    methods: {
-      loadData () {
-        console.log("调用方法加载数据2");
-      }
     }
   }
 </script>
@@ -91,7 +109,7 @@
 <style scoped>
   /*外层容器*/
   .search-other{
-    background: #EDF2F5;
+    background: #fff;
     font-size: .875rem;
   }
   /*缴费信息 标题*/
@@ -105,6 +123,7 @@
     border-radius: .4rem .4rem 0 0;
     border-bottom: 1px solid #015480;
     background: #fff;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -120,6 +139,7 @@
     padding: .5rem 2.5%;
     border-radius: 0 0 .4rem .4rem;
     background: #fff;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -134,6 +154,7 @@
   /*模块样式*/
   .search-model{
     margin: .25rem 0;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;

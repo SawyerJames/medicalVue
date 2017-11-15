@@ -1,28 +1,28 @@
 <template>
   <div class="o-detail">
-    <h1>{{this.detail.Title}}</h1>
-    <p class="msg">{{this.detail.city}}{{this.detail.Createtime}}</p>
-    <img class="titleImg" :src="this.detail.Image">
-    <div class="msgContent" v-html="this.detail.Content"></div>
+    <h1>{{detail.Title}}</h1>
+    <p class="msg">{{detail.city}}{{detail.Createtime}}</p>
+    <img class="titleImg" :src="detail.Image" v-if="detail.Image">
+    <div class="msgContent" v-html="detail.Content"></div>
   </div>
 </template>
 
 <script type="text/javascript">
 export default{
   name: 'o-detail',
-  created(){
-    document.body.style.background = "#FFF";
-  },
   data (){
     return {
       detail: [],
     }
   },
-  mounted () {
-    this.$nextTick (function () {
-      var Id = this.$route.params.id;
-      this.getOmsgDetail(Id);
-    })
+  activated (){
+    // 接收o-msg路由传递的参数id
+    var Id = this.$route.params.id;
+    // 调用方法+id，循环列表
+    this.getOmsgDetail(Id);
+  },
+  deactivated (){
+    this.detail = [];
   },
   methods: {
     getOmsgDetail: function (Id){
@@ -30,16 +30,16 @@ export default{
       // 加载数据
       this.$tools.GetDataFromServer(
         this,
-        'http://123.206.9.224/wap/Socsecurity/SocsecurityInfo/id/'+Id,
+        process.env.API_HOST + 'Client/SocsecurityInfo/id/'+Id,
         function success (res) {
           var resData = res.data;
           if (resData.State.Code === 1) {
             that.detail = resData.SocsecurityInfo;
-            that.detail.Image = 'http://123.206.9.224' + that.detail.Image;
+            that.detail.Image = 'http://hx.jltengfang.com' + that.detail.Image;
           }
         },
         function error (err){
-          console.log(2222);
+          return
         }
       )
     }
@@ -47,7 +47,7 @@ export default{
 }
 </script>
 
-<style type="text/css">
+<style type="text/css" scoped>
   .o-detail{
     width: 100%;
     padding: 5%;
@@ -55,19 +55,11 @@ export default{
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
-  h1{
-    text-align: center;
-  }
-  .titleImg{
-    width: 100%;
-    border-radius: .2rem;
-    margin-bottom: 1rem;
-  }
-  .msg{
-    font-size: .75rem;
-    margin: 1rem auto;
-    text-align: center;
-    color: #767676;
+  .o-detail h1{
+    text-align: left;
+    border-bottom: .2rem dashed #ddd;
+    padding-bottom: 1rem;
+    font-size: 1rem;
   }
   .msgContent{
     width: 100%;
@@ -77,9 +69,13 @@ export default{
   .msgContent p{
     text-indent: 1.5rem;
     line-height: 1.2rem;
+    /*英文断行*/
+    word-wrap:break-word;
+    word-break:break-all;
   }
-  .msgContent img {
+  .o-detail .titleImg{
     width: 100%;
-    margin: .5rem 0;
+    border-radius: .2rem;
+    margin-bottom: 1rem;
   }
 </style>

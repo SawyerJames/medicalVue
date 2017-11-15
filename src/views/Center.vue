@@ -1,14 +1,20 @@
 <template>
   <div class="center">
+    <!-- 报错弹窗 -->
+    <div class="errorMask" v-if="errShow"></div>
+    <div class="errorWin" v-if="errShow">
+      <img src="../assets/common/ErrLoading.gif">
+      <p>{{errTxt}}</p>
+    </div>
     <!-- 个人中心-路由跳转详情页 -->
-    <router-link to="/user" class="center-model center-model-main">
+    <router-link :to="{name:'user'}" class="center-model center-model-main">
       <div class="center-model-main-div">
         <div>
-          <img class="avatar" :src="userMsg.avatar">
+          <img class="avatar" :src="userMsg.HeadImgUrl">
           <!-- img -->
         </div>
         <div>
-          <p>{{userMsg.nickName}}</p>
+          <p>{{userMsg.username}}</p>
           <p>{{userMsg.phone}}</p>
         </div>
       </div>
@@ -26,7 +32,7 @@
     <div class="center-model">
       <span>身份信息认证</span>
       <div>
-        <span>{{userMsg.idCard}}</span>
+        <span>{{userMsg.card}}</span>
         <img class="phoneTrue" src="../assets/user/nameTrue.png">
       </div>
     </div>
@@ -38,16 +44,40 @@
     name: 'center',
     data () {
       return {
-        userMsg: {
-          nickName: "sawyerJames",
-          phone: "13894892758",
-          idCard: "220202199402222222",
-          avatar: require('../assets/user/user.png')
-        }
+        userMsg: {},
+        errShow: false,
+        errTxt: ''
       }
     },
-    created(){
-      document.body.style.background = "#fff";
+    mounted () {
+      this.$nextTick (function () {
+        this.getUserList();
+      })
+    },
+    methods: {
+      getUserList: function (){
+        var that = this;
+        // 加载数据
+        this.$tools.GetDataFromServer(
+          this,
+          process.env.API_HOST + 'Client/BasicInfo',
+          function success (res) {
+            var resData = res.data;
+            if (resData.State.Code == 1) {
+              that.userMsg = resData.Info;
+            }
+          },
+          function error (err){
+            that.errShow = true;
+            that.errTxt = '出现错误，请重新加载'
+            var errLoading = setTimeout(function (){
+              that.errShow = false;
+              that.errTxt = ''
+              clearTimeout(errLoading);
+            },2000)
+          }
+        )
+      }
     }
   }
 </script>
@@ -56,6 +86,7 @@
 <style scoped>
   .center{
     width: 100%;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -79,6 +110,7 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -90,6 +122,7 @@
   }
   .center-model>div{
     font-size: .75rem;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;

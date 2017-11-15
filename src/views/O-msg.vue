@@ -1,5 +1,11 @@
 <template>
   <div class="o-msg">
+    <!-- 报错弹窗 -->
+    <div class="errorMask" v-if="errShow"></div>
+    <div class="errorWin" v-if="errShow">
+      <img src="../assets/common/ErrLoading.gif">
+      <p>{{errTxt}}</p>
+    </div>
     <ul>
       <!-- msgFlag(唯一)：大图展示标志，true时展示其div，false时其他循环体过滤掉已经展示的大图广告 -->
       <!-- 路由统一为o-detail，通过传递专属id到下级页面进行判断加载数据 -->
@@ -25,19 +31,17 @@
 <script>
   export default {
     name: 'o-msg',
-    created(){
-      document.body.style.background = "#FFF";
-    },
     data () {
       return {
         msg: [],
-        msgTop: []
+        msgTop: [],
+        errShow: false,
+        errTxt: ''
       }
     },
-    mounted () {
-      this.$nextTick (function () {
+    activated (){
+        // 调用方法获取列表
         this.getOmsgList();
-      })
     },
     methods: {
       getOmsgList: function (){
@@ -45,23 +49,28 @@
         // 加载数据
         this.$tools.GetDataFromServer(
           this,
-          'http://123.206.9.224/wap/Socsecurity/SocsecurityList',
+          process.env.API_HOST + 'Client/SocsecurityList',
           function success (res) {
             var resData = res.data;
-            console.log(resData);
             if (resData.State.Code === 1) {
               that.msgTop = resData.Top;
               that.msg = resData.SocsecurityInfo.Itemlist;
               that.msg.forEach(function(item){
-                item.Image = 'http://123.206.9.224' + item.Image;
+                item.Image = 'http://hx.jltengfang.com' + item.Image;
               });
               that.msgTop.forEach(function(item){
-                item.Image = 'http://123.206.9.224' + item.Image;
+                item.Image = 'http://hx.jltengfang.com' + item.Image;
               });
             }
           },
           function error (err){
-            console.log(err);
+            that.errShow = true;
+            that.errTxt = '出现错误，请重新加载'
+            var errLoading = setTimeout(function (){
+              that.errShow = false;
+              that.errTxt = ''
+              clearTimeout(errLoading);
+            },2000)
           }
         )
       }
@@ -73,6 +82,7 @@
 <style scoped>
 .o-msg{
     width: 100%;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -119,6 +129,7 @@
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  display: box;
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -132,12 +143,13 @@
   justify-content: space-between;
 }
 .msgModel>div img{
-  width: 6rem;
-  height: 3rem;
+  width: 6rem !important;
+  height: 3rem !important;
   border-radius: .2rem;
 }
 .msgModel>div{
   margin-bottom: 1rem;
+  display: box;
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;

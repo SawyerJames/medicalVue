@@ -1,6 +1,11 @@
 <template>
   <div class="search-my">
-    <user></user>
+    <!-- 报错弹窗 -->
+    <div class="errorMask" v-if="errShow"></div>
+    <div class="errorWin" v-if="errShow">
+      <img src="../assets/common/ErrLoading.gif">
+      <p>{{errTxt}}</p>
+    </div>
     <!-- 个人综合信息查询 -->
     <div class="search-my-title">
       <span>个人综合信息</span>
@@ -10,56 +15,67 @@
       <div class="search-model">
         <div>
           <span class="search-model-title">姓名</span>
-          <span class="search-model-msg">{{search.nickName}}</span>
+          <span class="search-model-msg">{{search.username}}</span>
         </div>
         <div>
           <span class="search-model-title">性别</span>
-          <span class="search-model-msg">{{search.sex}}</span>
+          <span class="search-model-msg" v-if="search.sex == '1'">男</span>
+          <span class="search-model-msg" v-else-if="search.sex == '2'">女</span>
         </div>
       </div>
       <div class="search-model">
         <span class="search-model-title">身份证号</span>
-        <span class="search-model-msg">{{search.idCard}}</span>
+        <span class="search-model-msg">{{search.card}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">出生日期</span>
         <span class="search-model-msg">{{search.birthday}}</span>
       </div>
       <div class="search-model">
-        <span class="search-model-title">单位名称<span class="search-model-titleFlag">(职工相关)</span></span>
-        <span class="search-model-msg">{{search.conpany}}</span>
-      </div>
-      <div class="search-model">
         <span class="search-model-title">联系电话</span>
         <span class="search-model-msg">{{search.phone}}</span>
       </div>
       <div class="search-model">
+        <span class="search-model-title">地址</span>
+        <span class="search-model-msg">{{search.address}}</span>
+      </div>
+      <div class="search-model">
+        <span class="search-model-title">单位名称<span class="search-model-titleFlag"></span></span>
+        <span class="search-model-msg">{{search.company_name1}}</span>
+      </div>
+      <div class="search-model">
         <span class="search-model-title">用户类型</span>
-        <span class="search-model-msg">{{search.user}}</span>
+        <span class="search-model-msg" v-if="search.user_type == '1'">职工</span>
+        <span class="search-model-msg" v-if="search.user_type == '2'">居民</span>
+        <span class="search-model-msg" v-if="search.user_type == '3'">其他</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">待遇截止日期</span>
-        <span class="search-model-msg">{{search.lastTime}}</span>
+        <span class="search-model-msg">{{search.currentdeadline}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">账户余额<span class="search-model-titleFlag">(职工相关)</span></span>
-        <span class="search-model-msg">{{search.money}}</span>
+        <span class="search-model-msg">{{search.balance}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">历年收入<span class="search-model-titleFlag">(职工相关)</span></span>
-        <span class="search-model-msg">{{search.oldIncome}}</span>
+        <span class="search-model-msg">{{search.oldyearincome}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">本年收入<span class="search-model-titleFlag">(职工相关)</span></span>
-        <span class="search-model-msg">{{search.income}}</span>
+        <span class="search-model-msg">{{search.nowyearincome}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">本年支出<span class="search-model-titleFlag">(职工相关)</span></span>
-        <span class="search-model-msg">{{search.expenditure}}</span>
+        <span class="search-model-msg">{{search.nowexpenditure}}</span>
+      </div>
+      <div class="search-model">
+        <span class="search-model-title">险种信息<span class="search-model-titleFlag">(职工相关)</span></span>
+        <span class="search-model-msg">{{search.insurance_info}}</span>
       </div>
       <div class="search-model">
         <span class="search-model-title">参保险种<span class="search-model-titleFlag">(职工相关)</span></span>
-        <span class="search-model-msg">{{search.medicalType}}</span>
+        <span class="search-model-msg">{{search.insured_name}}</span>
       </div>
     </div>
   </div>
@@ -71,51 +87,55 @@
     name: 'search-my',
     data () {
       return {
-        search: {
-          nickName: "张添",
-          sex: "男",
-          idCard: "220202199402222222",
-          birthday: "1994.13.14",
-          conpany: "吉林省腾放科技有限公司",
-          phone: "13894892758",
-          user: "普通职工",
-          lastTime: "2017.02.11",
-          money: "1500.00",
-          oldIncome: "1800.00",
-          income: "1000.00",
-          expenditure: "2839.50",
-          medicalType: "医疗保险"
-        }
+        search: {},
+        errShow: false,
+        errTxt: ''
       }
-    },
-    created(){
-      document.body.style.background = "#EDF2F5";
     },
     mounted () {
       this.$nextTick(function (){
-        this.loadData();
+        var that = this;
+        this.$tools.GetDataFromServer(
+          this,
+          process.env.API_HOST + 'Client/IntegratedInfo',
+          function success (res) {
+            var resData = res.data;
+            if (resData.State.Code == 1) {
+              that.search = resData.Info;
+            }
+            if (resData.State.Code != 1) {
+              that.errShow = true;
+              that.errTxt = '数据库没有您的信息'
+              var errLoading = setTimeout(function (){
+                that.errShow = false;
+                that.errTxt = ''
+                clearTimeout(errLoading);
+              },2000)
+            }
+          },
+          function error (err){
+            that.errShow = true;
+            that.errTxt = '出现错误，请重新加载'
+            var errLoading = setTimeout(function (){
+              that.errShow = false;
+              that.errTxt = ''
+              clearTimeout(errLoading);
+            },2000)
+          }
+        );
       });
     },
     components: {
       user
-    },
-    methods: {
-      loadData () {
-        console.log("调用方法加载数据");
-      }
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  /*html hack*/
-  html{
-    background: #EDF2F5 !important;
-  }
   /*外层容器*/
   .search-my{
-    background: #EDF2F5;
+    background: #fff;
     font-size: .875rem;
   }
   /*个人综合信息 标题*/
@@ -129,6 +149,7 @@
     border-radius: .4rem .4rem 0 0;
     border-bottom: 1px solid #015480;
     background: #fff;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -144,6 +165,7 @@
     padding: .5rem 2.5%;
     border-radius: 0 0 .4rem .4rem;
     background: #fff;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -158,6 +180,7 @@
   /*模块样式*/
   .search-model{
     margin: .25rem 0;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;

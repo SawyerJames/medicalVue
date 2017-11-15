@@ -1,16 +1,18 @@
 <template>
   <div class="center">
-    <!-- 用户信息组件 -->
-    <user></user>
+    <!-- 子路由展示 -->
+    <router-view></router-view>
     <!-- 微信查询tab 两个选项卡 -->
-    <div class="searchTab">
-      <router-link tag="div" v-for="(item,index) in searchTabList" :to="{path: item.path}" :class="['searchTab-li chooseSearchTab']">
-        <img :src="item.imgUrl">
-        <span>{{item.msg}}</span>
-      </router-link>
+    <div v-if="tabSearch">
+      <div class="searchTab">
+        <router-link tag="div" v-for="(item,index) in searchTabList" :to="{path: item.path}" :class="['searchTab-li chooseSearchTab']">
+          <img :src="item.imgUrl">
+          <span>{{item.msg}}</span>
+        </router-link>
+      </div>
+      <!-- 其他信息 -->
+      <otherMsg></otherMsg>
     </div>
-    <!-- 其他社保信息组件 -->
-    <otherMsg></otherMsg>
   </div>
 </template>
 
@@ -33,15 +35,28 @@
             msg: "用户缴费信息查询"
           }
         ],
-        currentIndex: 0
+        currentIndex: 0,
+        tabSearch: true
       }
     },
-    created(){
-      document.body.style.background = "#FFF";
+    mounted () {
+      this.$nextTick(function (){
+      });
+    },
+    watch: {
+      "$route": "fetchDate"
     },
     methods: {
       touchPayBar (index) {
         this.currentIndex = index;
+      },
+      fetchDate(){
+        if (this.$route.name == 'search-other' || this.$route.name == 'search-my') {
+          this.tabSearch = false;
+        }
+        if (this.$route.name == 'search') {
+          this.tabSearch = true;
+        }
       }
     },
     components: {
@@ -53,14 +68,14 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  /*user Hack 去掉1rem边框*/
-  .user{
-    border-bottom: none;
-  }
+.medical-title{
+  color: red;
+}
   .searchTab{
     width: 100%;
     height: 9rem;
     border-bottom: .7rem solid #EDF2F5;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -82,6 +97,7 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;

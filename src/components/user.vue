@@ -3,28 +3,30 @@
     <!-- flag为true，未认证 -->
     <div class="user-msg" v-if="userFlag">
       <img class="avatar" src="../assets/index/userDefault.png">
-      <router-link v-if="userFlag" class="registerBtn" tag="button" to="/register">点我认证</router-link>
+      <keep-alive><router-link v-if="userFlag" class="registerBtn" tag="button" to="/register">点我认证</router-link></keep-alive>
     </div>
     <!-- flag为false，信息认证 -->
     <div class="user-msgTrue" v-else>
       <div class="user-msgTrue-user">
         <div>
-          <img class="avatar" :src="userMsg.avatar">
-          <span :class="userMsg.sex ? 'boy':'girl'"></span>
-          <span>{{userMsg.nickName}}</span>
+          <router-link to="user"><img class="avatar" :src="userMsg.HeadImgUrl"></router-link>
+          <span :class="[{ boy : userMsg.sex === '1'},{ girl : userMsg.sex === '2'}]"></span>
+          <span>{{userMsg.username}}</span>
         </div>
-        <div>
-          <img class="zhanghu" src="../assets/user/zhanghu.png">
-          <img class="renzheng" src="../assets/user/renzheng.png">
-        </div>
+        <keep-alive>
+          <router-link to="user" tag="div">
+            <img class="zhanghu" src="../assets/user/zhanghu.png">
+            <img class="renzheng" src="../assets/user/renzheng.png">
+          </router-link>
+        </keep-alive>
       </div>
       <div class="user-msgTrue-model">
         <span>保险类型</span>
-        <span>{{userMsg.medicalType}}</span>
+        <span>{{userMsg.medical_type}}</span>
       </div>
       <div class="user-msgTrue-model">
         <span>待遇期</span>
-        <span>{{userMsg.expire}}</span>
+        <span>{{userMsg.currentdeadline}}</span>
       </div>
     </div>
   </div>
@@ -34,17 +36,59 @@
 export default{
   data () {
     return{
-      userFlag: true,
-      userMsg:{
-          avatar: require('../assets/user/user.png'),
-          nickName: "sawyerJames",
-          medicalType: "医疗保险",
-          expire: "2017-01-01至2018-01-01",
-          sex: 0
-      }
+      userFlag: '',
+      userMsg:{}
     }
   },
-  methods: {
+  mounted () {
+    this.$nextTick(function (){
+      // 挂载前请求数据，判断认证，提交父组件参数popflag
+      var that = this;
+      this.$tools.GetDataFromServer(
+        this,
+        // process.env.API_HOST + 'Client/Certification',
+        'http://hx.jltengfang.com/wap/Client/Certification',
+        function success (res) {
+          var resData = res.data;
+          // 有数据存在
+          if (resData.State.Code == 1) {
+            // 认证通过
+            if (resData.Info.Certification == 1) {
+              that.userFlag = false;
+              // 将认证信息存入全局状态中
+              that.$store.state.userFlag = false;
+              that.userMsg = resData.Info;
+              /*向index组件抛出当前的认证状态*/
+              that.$emit('flag',false);
+            }
+            // 认证不通过
+            if (resData.Info.Certification != 1) {
+              that.userFlag = true;
+              // 将认证信息存入全局状态中
+              that.$store.state.userFlag = true;
+              /*向index组件抛出当前的认证状态*/
+              that.$emit('flag',true);
+            }
+          }
+          // 没有数据存在：认证不通过
+          if (resData.State.Code != 1) {
+            that.userFlag = true;
+            // 将认证信息存入全局状态中
+            that.$store.state.userFlag = true;
+            /*向index组件抛出当前的认证状态*/
+            that.$emit('flag',true);
+          }
+        },
+        // 认证不通过
+        function error (err){
+          that.userFlag = true;
+          // 将认证信息存入全局状态中
+          that.$store.state.userFlag = true;
+          /*向index组件抛出当前的认证状态*/
+          that.$emit('flag',true);
+        }
+      );
+    });
   }
 }
 </script>
@@ -52,8 +96,8 @@ export default{
 <style type="text/css" scoped>
   .user{
     width: 100%;
-    height: 14.5rem;
-    background: url(../assets/user/userBg.png);
+    height: 13rem;
+    background: #fff;
     -webkit-background-size: cover;
     background-size: cover;
     border-bottom: 1rem solid #EDF2F5;
@@ -65,14 +109,16 @@ export default{
     justify-content: center;
     -ms-align-items: center;
     align-items: center;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
   .user-msg{
-    width: 90%;
-    height: 70%;
+    width: 100%;
+    height: 100%;
     background: url(../assets/user/userFalseBg.png);
     -webkit-background-size: 100%;
     background-size: 100%;
-    border-radius: .5rem;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -92,6 +138,7 @@ export default{
     height: 5rem;
     margin-bottom: 1rem;
     border-radius: 5rem;
+    border: .2rem solid #BFE6F2;
   }
   .registerBtn{
     height: 1.5rem;
@@ -112,7 +159,7 @@ export default{
     width: 100%;
     height: 100%;
     font-size: .875rem;
-    background: url(../assets/user/bg.png);
+    background: url(../assets/user/bg.jpg);
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -127,7 +174,10 @@ export default{
   /*用户信息*/
   .user-msgTrue-user{
     width: 90%;
-    margin: 10% auto 5%;
+    /*color: #3291CF;*/
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 5% auto;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;

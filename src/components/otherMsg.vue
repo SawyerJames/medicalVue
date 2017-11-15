@@ -18,6 +18,9 @@
 </template>
 
 <script type="text/javascript">
+  export default{
+    name: 'otherMsg'
+  }
 </script>
 
 <style type="text/css" scoped>

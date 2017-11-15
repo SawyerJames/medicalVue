@@ -19,14 +19,54 @@ import Ndetail from '@/views/N-detail.vue'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',    //路由模式
-  base: __dirname,    //基目录：文件目录
+  base: '/wap',  //基目录：文件目录
   routes: [
     // 首页
     {
       path: '/',
       name: 'Index',
-      component: Index
+      component: Index,
+      children: [
+        // 微信查询首页
+        {
+          path: '/search',
+          name: 'search',
+          component: Search,
+          children: [
+            // 微信查询
+            {
+              path: '/search-my',
+              name: 'search-my',
+              component: SearchMy
+            },
+            {
+              path: '/search-other',
+              name: 'search-other',
+              component: SearchOther
+            },
+          ]
+        },
+        // 微信缴费首页
+        {
+          path: '/pay',
+          redirect: '/pay-my',
+          name: 'pay',
+          component: Pay,
+          children: [
+            // 微信缴费
+            {
+              path: '/pay-my',
+              name: 'pay-my',
+              component: PayMy,
+            },
+            {
+              path: '/pay-other',
+              name: 'pay-other',
+              component: PayOther,
+            }
+          ]
+        },
+      ]
     },
     // tabBar 底部三栏
     {
@@ -38,30 +78,6 @@ export default new Router({
       path: '/center',
       name: 'center',
       component: Center
-    },
-    {
-      path: '/search',
-      name: 'search',
-      component: Search
-    },
-    // 微信缴费
-    {
-      path: '/pay',
-      redirect: '/pay-my',
-      name: 'pay',
-      component: Pay,
-      children: [
-        {
-          path: '/pay-my',
-          name: 'pay-my',
-          component: PayMy,
-        },
-        {
-          path: '/pay-other',
-          name: 'pay-other',
-          component: PayOther,
-        }
-      ]
     },
     // 通知公告
     {
@@ -90,21 +106,10 @@ export default new Router({
       name: 'o-detail',
       component: Odetail
     },
-    // 微信查询
-    {
-      path: '/search-my',
-      name: 'search-my',
-      component: SearchMy
-    },
-    {
-      path: '/search-other',
-      name: 'search-other',
-      component: SearchOther
-    },
     // 个人中心->详细
     {
       path: '/user',
-      name: 'center-user',
+      name: 'user',
       component: CenterUser
     },
     // 注册

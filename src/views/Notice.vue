@@ -1,7 +1,13 @@
 <template>
   <div class="notice">
+    <!-- 报错弹窗 -->
+    <div class="errorMask" v-if="errShow"></div>
+    <div class="errorWin" v-if="errShow">
+      <img src="../assets/common/ErrLoading.gif">
+      <p>{{errTxt}}</p>
+    </div>
     <div class="banner">
-      <img src="../assets/notice/banner.png"/>
+      <img src="../assets/notice/banner.jpg"/>
     </div>
     <!-- 新闻列表 -->
     <ul class="n-list">
@@ -19,34 +25,37 @@
 <script>
   export default {
     name: 'notice',
-    created(){
-      document.body.style.background = "#FFF";
-    },
     data () {
       return {
-        notice: []
+        notice: [],
+        errShow: false,
+        errTxt: ''
       }
     },
-    mounted () {
-      this.$nextTick (function () {
-        this.getNoticeList();
-      })
+    activated (){
+      this.getNoticeList();
     },
     methods: {
-      getNoticeList: function (){
+      getNoticeList (){
         var that = this;
         // 加载数据
         this.$tools.GetDataFromServer(
           this,
-          'http://123.206.9.224/wap/Notice/NoticeList',
+          process.env.API_HOST + 'Client/NoticeList',
           function success (res) {
             var resData = res.data;
-            if (resData.State.Code === 1) {
+            if (resData.State.Code == 1) {
               that.notice = resData.NoticeInfo.Itemlist;
             }
           },
           function error (err){
-            console.log(1);
+            that.errShow = true;
+            that.errTxt = '出现错误，请重新加载'
+            var errLoading = setTimeout(function (){
+              that.errShow = false;
+              that.errTxt = ''
+              clearTimeout(errLoading);
+            },2000)
           }
         )
       }
@@ -58,6 +67,7 @@
 <style scoped>
   .notice{
     width: 100%;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -82,6 +92,7 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -100,6 +111,7 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -113,6 +125,7 @@
     justify-content: space-between;
   }
   .n-detail>div{
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;

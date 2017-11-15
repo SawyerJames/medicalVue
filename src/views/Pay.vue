@@ -1,10 +1,8 @@
 <template>
   <div class="pay">
-    <!-- 个人信息组件 -->
-    <user></user>
     <!-- 微信缴费组件: 默认为个人缴费 -->
     <div class="payTab">
-      <router-link tag="div" v-for="(item,index) in payTabList" :to="{path: item.path}" :class="['payTab-li',{choosePayTab: currentIndex === index }]" @click.native="touchPayBar(index)">
+      <router-link tag="div" v-for="(item,index) in payTabList" :to="{path: item.path}" :class="['payTab-li',{choosePayTab: currentIndex === index }]" @click.native="touchPayBar(index)" replace>
         <img :src="item.imgUrl">
         <span>{{item.msg}}</span>
       </router-link>
@@ -35,8 +33,9 @@
         currentIndex: 0
       }
     },
-    created(){
-      document.body.style.background = "#FFF";
+    mounted () {
+      this.$nextTick(function (){
+      });
     },
     methods: {
       touchPayBar (index) {
@@ -59,6 +58,7 @@
     width: 100%;
     height: 9rem;
     border-bottom: .7rem solid #EDF2F5;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -80,6 +80,7 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    display: box;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
