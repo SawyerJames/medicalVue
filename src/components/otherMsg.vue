@@ -1,9 +1,9 @@
 <template>
   <div class="otherMsg">
-    <router-link tag="div" to="/o-msg">
+    <router-link tag="div" to="/notice">
       <div>
         <img class="o-icon" src="../assets/index/o-msg.png">
-        <span>其他相关社保信息</span>
+        <span>通知公告</span>
       </div>
       <img class="o-icon" src="../assets/common/arrow.png">
     </router-link>
@@ -37,9 +37,9 @@
     flex-direction: column;
   }
   .otherMsg>div{
-    width: 80%;
+    width: 90%;
     height: 3rem;
-    padding: 0 10%;
+    padding: 0 5%;
     border-bottom: 1px solid #ddd;
     display: -webkit-box;
     display: -moz-box;
@@ -49,6 +49,9 @@
     justify-content: space-between;
     -ms-align-items: center;
     align-items: center;
+  }
+  .otherMsg>div:last-child{
+    border-bottom: none;
   }
   .otherMsg>div:first-child{
     margin-top: .5rem;

@@ -1,20 +1,36 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/views/Index.vue'
-import Center from '@/views/Center.vue'
-import Search from '@/views/Search.vue'
-import Pay from '@/views/Pay.vue'
-import Notice from '@/views/Notice.vue'
-import Omsg from '@/views/O-msg.vue'
-import Oopinion from '@/views/O-opinion.vue'
-import PayMy from '@/views/PayMy.vue'
-import PayOther from '@/views/PayOther.vue'
-import SearchOther from '@/views/SearchOther.vue'
-import SearchMy from '@/views/SearchMy.vue'
-import CenterUser from '@/views/CenterUser.vue'
-import Register from '@/views/Register.vue'
-import Odetail from '@/views/O-detail.vue'
-import Ndetail from '@/views/N-detail.vue'
+// 首页
+import Index from '@/views/index/Index.vue'
+// 查询相关
+import Search from '@/views/search/Search.vue'
+import SearchOther from '@/views/search/SearchOther.vue'
+import SearchMy from '@/views/search/SearchMy.vue'
+// 支付相关
+import PayMy from '@/views/pay/PayMy.vue'
+import PayOther from '@/views/pay/PayOther.vue'
+import PayOtherSee from '@/views/pay/PayOtherSee.vue'
+import PayOtherAdd from '@/views/pay/PayOtherAdd.vue'
+// 通告相关
+import Notice from '@/views/notice/Notice.vue'
+import Ndetail from '@/views/notice/N-detail.vue'
+import Oopinion from '@/views/notice/O-opinion.vue'
+// 个人中心
+import Center from '@/views/center/Center.vue'
+import CenterUser from '@/views/center/CenterUser.vue'
+import Notion from '@/views/center/Notion.vue'
+import Address from '@/views/center/Address.vue'
+import PaymentDetails from '@/views/center/PaymentDetails.vue'
+import Security from '@/views/center/Security.vue'
+import ModPhone from '@/views/center/ModPhone.vue'
+import UnbundIdcard from '@/views/center/UnbundIdcard.vue'
+import ModNewPhone from '@/views/center/ModNewPhone.vue'
+import AppealPhone from '@/views/center/AppealPhone.vue'
+// 注册相关
+import Register from '@/views/register/Register.vue'
+import PhoneRegister from '@/views/register/PhoneRegister.vue'
+import AddRegister from '@/views/register/AddRegister.vue'
+import ErrorRegister from '@/views/register/ErrorRegister.vue'
 
 Vue.use(Router)
 
@@ -27,46 +43,46 @@ export default new Router({
       name: 'Index',
       component: Index,
       children: [
-        // 微信查询首页
+        // 医保查询首页
         {
           path: '/search',
           name: 'search',
           component: Search,
-          children: [
-            // 微信查询
-            {
-              path: '/search-my',
-              name: 'search-my',
-              component: SearchMy
-            },
-            {
-              path: '/search-other',
-              name: 'search-other',
-              component: SearchOther
-            },
-          ]
-        },
-        // 微信缴费首页
-        {
-          path: '/pay',
-          redirect: '/pay-my',
-          name: 'pay',
-          component: Pay,
-          children: [
-            // 微信缴费
-            {
-              path: '/pay-my',
-              name: 'pay-my',
-              component: PayMy,
-            },
-            {
-              path: '/pay-other',
-              name: 'pay-other',
-              component: PayOther,
-            }
-          ]
         },
       ]
+    },
+    // 医保查询
+    {
+      path: '/search-my',
+      name: 'search-my',
+      component: SearchMy
+    },
+    {
+      path: '/search-other',
+      name: 'search-other',
+      component: SearchOther
+    },
+    // 个人缴费
+    {
+      path: '/pay-my',
+      name: 'pay-my',
+      component: PayMy,
+    },
+    // 代缴保费
+    {
+      path: '/pay-other',
+      name: 'pay-other',
+      component: PayOther,
+    },
+    {
+      path: '/payOtherAdd',
+      name: 'payOtherAdd',
+      component: PayOtherAdd,
+    },
+    {
+      path: '/payOtherSee',
+      name: 'payOtherSee',
+      component: PayOtherSee,
     },
     // tabBar 底部三栏
     {
@@ -90,21 +106,11 @@ export default new Router({
       name: 'n-detail',
       component: Ndetail
     },
-    // 其他社保信息
+    // 意见反馈
     {
       path: '/o-opinion',
       name: 'o-opinion',
       component: Oopinion
-    },
-    {
-      path: '/o-msg',
-      name: 'o-msg',
-      component: Omsg
-    },
-    {
-      path: '/o-detail',
-      name: 'o-detail',
-      component: Odetail
     },
     // 个人中心->详细
     {
@@ -112,11 +118,66 @@ export default new Router({
       name: 'user',
       component: CenterUser
     },
+    {
+      path: '/notion',
+      name: 'notion',
+      component: Notion
+    },
+    {
+      path: '/address',
+      name: 'address',
+      component: Address
+    },
+    {
+      path: '/paymentDetails',
+      name: 'PaymentDetails',
+      component: PaymentDetails
+    },
+    {
+      path: '/security',
+      name: 'security',
+      component: Security
+    },
+    {
+      path: '/modPhone',
+      name: 'modPhone',
+      component: ModPhone
+    },
+    {
+      path: '/unbundIdcard',
+      name: 'unbundIdcard',
+      component: UnbundIdcard
+    },
+    {
+      path: '/appealPhone',
+      name: 'appealPhone',
+      component: AppealPhone
+    },
+    {
+      path: '/modNewPhone',
+      name: 'modNewPhone',
+      component: ModNewPhone
+    },
     // 注册
     {
       path: '/register',
       name: 'register',
       component: Register
+    },
+    {
+      path: '/phoneRegister',
+      name: 'phoneRegister',
+      component: PhoneRegister
+    },
+    {
+      path: '/errorRegister',
+      name: 'errorRegister',
+      component: ErrorRegister
+    },
+    {
+      path: '/addRegister',
+      name: 'addRegister',
+      component: AddRegister
     }
   ]
 })

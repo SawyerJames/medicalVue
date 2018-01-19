@@ -32,6 +32,7 @@
 // 引入初始化样式文件
 import './css/reset.css'
 import './css/media.css'
+import './css/common.css'
 export default {
     name: 'app',
     data() {
@@ -57,25 +58,28 @@ export default {
             loading: true
         }
     },
-    mounted() {
-        this.$nextTick(function() {
-            // var that = this;
-            // var xhr = new XMLHttpRequest();
-            // xhr.open("get",'Check/IsSession',false);
-            // xhr.onreadystatechange = function() {
-            //   that.loadingGo();
-            //   if (xhr.readyState == 4 && xhr.status == 200) {
-            //     if (xhr.responseText == 1) {
-            //       that.loadingGo();
-            //     }
-            //     if (xhr.responseText != 1) {
-            //       window.location.href = process.env.API_HOST + '/Home';
-            //     }
-            //   }
-            // };
-            // xhr.send();
-            this.loadingGo();
-        })
+    beforeCreate() {
+        // 同步ajax获取用户认证状态
+        var that = this;
+        var xhr = new XMLHttpRequest();
+        xhr.open("get",'Check/IsSession',false);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+            // 如果授权成功，状态码为1，跳转到登录加载页
+            if (xhr.responseText == 1 || xhr.responseText == "职工" || xhr.responseText == "居民") {
+              that.$store.state.userType = xhr.responseText;
+            }
+            // 如果授权不成功，状态码不为1，跳转到Home页
+            if (xhr.responseText == 0) {
+              window.location.href = process.env.API_HOST + '/home';
+            }
+          }
+        };
+        // 进行ajax交互
+        xhr.send();
+    },
+    created(){
+      this.loadingGo();
     },
     // 监听路由
     watch: {
@@ -116,7 +120,7 @@ export default {
         // 修正返回键tab样式错乱bug
         fetchDate() {
             if (this.$route.name == 'Index') {
-                this.isIndex = 0;
+                this.isIndex =       0;
             }
         }
     }
@@ -128,8 +132,6 @@ body,
 #app>div {
     height: 100%;
 }
-
-
 /*信息类新闻hack*/
 
 .msgContent img {
@@ -150,51 +152,6 @@ body,
     border-radius: .5rem;
     padding: .1rem .5rem;
 }
-
-
-/*报错弹窗*/
-
-.errorMask {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: rgba(0, 0, 0, .5);
-    z-index: 999;
-}
-
-.errorWin {
-    color: #fff;
-    position: fixed;
-    width: 10rem;
-    height: 5rem;
-    background: none;
-    margin-left: -5rem;
-    left: 50%;
-    top: 30%;
-    border-radius: .5rem;
-    z-index: 9999;
-    display: box;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
-    -o-flex-direction: column;
-    flex-direction: column;
-    justify-content: space-around;
-    -ms-align-items: center;
-    align-items: center;
-}
-
-.errorWin img {
-    width: 3rem;
-}
-
 
 /*tabBar common*/
 
@@ -246,7 +203,7 @@ body,
 
 .tabHack {
     width: 100%;
-    height: 4.375rem;
+    height: 4.3rem;
 }
 
 #loading {

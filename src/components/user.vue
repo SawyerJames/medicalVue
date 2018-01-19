@@ -10,17 +10,12 @@
       <div class="user-msgTrue-user">
         <div>
           <router-link to="user"><img class="avatar" :src="userMsg.HeadImgUrl"></router-link>
-          <span :class="[{ boy : userMsg.sex === '1'},{ girl : userMsg.sex === '2'}]"></span>
+          <span :class="[{ boy : userMsg.sex == 1},{ girl : userMsg.sex == 2}]"></span>
           <span>{{userMsg.username}}</span>
         </div>
-        <keep-alive>
-          <router-link to="user" tag="div">
-            <img class="zhanghu" src="../assets/user/zhanghu.png">
-            <img class="renzheng" src="../assets/user/renzheng.png">
-          </router-link>
-        </keep-alive>
       </div>
-      <div class="user-msgTrue-model">
+      <!-- 居民类型才拥有保险类型 -->
+      <div class="user-msgTrue-model" v-if="userType == 2">
         <span>保险类型</span>
         <span>{{userMsg.medical_type}}</span>
       </div>
@@ -37,28 +32,37 @@ export default{
   data () {
     return{
       userFlag: '',
-      userMsg:{}
+      userMsg:{},
+      userType: ''
     }
   },
-  mounted () {
-    this.$nextTick(function (){
+  created () {
+      // 全局用户类型
+      var userType = this.$store.state.userType;
+      if (userType == '职工') {
+        this.userType = 1;
+      }
+      if (userType == '居民' || userType == 1) {
+        this.userType = 2;
+      }
       // 挂载前请求数据，判断认证，提交父组件参数popflag
       var that = this;
       this.$tools.GetDataFromServer(
         this,
+        this.API.user,
         // process.env.API_HOST + 'Client/Certification',
-        'http://hx.jltengfang.com/wap/Client/Certification',
         function success (res) {
           var resData = res.data;
           // 有数据存在
           if (resData.State.Code == 1) {
             // 认证通过
             if (resData.Info.Certification == 1) {
+              that.userMsg = resData.Info;
+              // 认证信息
               that.userFlag = false;
               // 将认证信息存入全局状态中
               that.$store.state.userFlag = false;
-              that.userMsg = resData.Info;
-              /*向index组件抛出当前的认证状态*/
+              /*向index组件抛出当前的认证状态及用户类型*/
               that.$emit('flag',false);
             }
             // 认证不通过
@@ -66,7 +70,7 @@ export default{
               that.userFlag = true;
               // 将认证信息存入全局状态中
               that.$store.state.userFlag = true;
-              /*向index组件抛出当前的认证状态*/
+              /*向index组件抛出当前的认证状态及用户类型*/
               that.$emit('flag',true);
             }
           }
@@ -75,7 +79,7 @@ export default{
             that.userFlag = true;
             // 将认证信息存入全局状态中
             that.$store.state.userFlag = true;
-            /*向index组件抛出当前的认证状态*/
+            /*向index组件抛出当前的认证状态及用户类型*/
             that.$emit('flag',true);
           }
         },
@@ -84,11 +88,10 @@ export default{
           that.userFlag = true;
           // 将认证信息存入全局状态中
           that.$store.state.userFlag = true;
-          /*向index组件抛出当前的认证状态*/
+          /*向index组件抛出当前的认证状态及认证类型*/
           that.$emit('flag',true);
         }
       );
-    });
   }
 }
 </script>
@@ -96,11 +99,11 @@ export default{
 <style type="text/css" scoped>
   .user{
     width: 100%;
-    height: 13rem;
+    height: auto;
     background: #fff;
     -webkit-background-size: cover;
     background-size: cover;
-    border-bottom: 1rem solid #EDF2F5;
+    border-bottom: .5rem solid #EDF2F5;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -116,6 +119,8 @@ export default{
   .user-msg{
     width: 100%;
     height: 100%;
+    font-size: .875rem;
+    padding: 1rem 0;
     background: url(../assets/user/userFalseBg.png);
     -webkit-background-size: 100%;
     background-size: 100%;
@@ -134,23 +139,21 @@ export default{
     align-items: center;
   }
   .avatar{
-    width: 5rem;
-    height: 5rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 3rem;
     margin-bottom: 1rem;
-    border-radius: 5rem;
-    border: .2rem solid #BFE6F2;
+    border: 1px solid #ddd;
   }
   .registerBtn{
     height: 1.5rem;
     width: 5rem;
     background: #F7F7F7;
-    border-radius: .2rem;
+    border-radius: .1rem;
     border: none;
-    -webkit-box-shadow: 0px 0px 10px 2px #ddd inset;
-    box-shadow: 0px 0px 10px 2px #ddd inset;
     font-size: .875rem;
     font-weight: bold;
-    color: #E44855;
+    color: #31679C;
     letter-spacing: 1px;
     outline: none;
   }
@@ -159,6 +162,7 @@ export default{
     width: 100%;
     height: 100%;
     font-size: .875rem;
+    padding: 1rem 0;
     background: url(../assets/user/bg.jpg);
     display: -webkit-box;
     display: -moz-box;
@@ -174,10 +178,9 @@ export default{
   /*用户信息*/
   .user-msgTrue-user{
     width: 90%;
-    /*color: #3291CF;*/
     font-size: 1rem;
     font-weight: bold;
-    margin: 5% auto;
+    margin: 0 auto .5rem;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -203,10 +206,11 @@ export default{
     align-items: center;
   }
   .user-msgTrue-user>div .avatar{
-    width: 4rem;
-    height: 4rem;
-    border-radius: 4rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 3rem;
     margin: 0 .5rem 0 0;
+    border: 1px solid #ddd;
   }
   .user-msgTrue-user>div .zhanghu{
     height: 1.2rem;
